@@ -208,8 +208,7 @@ func (l *Logger) Panicf(format string, args ...interface{}) {
 
 // Critical logs a message using CRITICAL as log level. (fmt.Sprint())
 func (l *Logger) Critical(args ...interface{}) {
-	s := fmt.Sprint(args...)
-	l.log(CRITICAL, "%s", s)
+	l.log(CRITICAL, defaultArgsFormat(len(args)), args...)
 }
 
 // Criticalf logs a message using CRITICAL as log level.
@@ -219,8 +218,7 @@ func (l *Logger) Criticalf(format string, args ...interface{}) {
 
 // Error logs a message using ERROR as log level. (fmt.Sprint())
 func (l *Logger) Error(args ...interface{}) {
-	s := fmt.Sprint(args...)
-	l.log(ERROR, "%s", s)
+	l.log(ERROR, defaultArgsFormat(len(args)), args...)
 }
 
 // Errorf logs a message using ERROR as log level.
@@ -230,8 +228,7 @@ func (l *Logger) Errorf(format string, args ...interface{}) {
 
 // Warning logs a message using WARNING as log level.
 func (l *Logger) Warning(args ...interface{}) {
-	s := fmt.Sprint(args...)
-	l.log(WARNING, "%s", s)
+	l.log(WARNING, defaultArgsFormat(len(args)), args...)
 }
 
 // Warningf logs a message using WARNING as log level.
@@ -241,8 +238,7 @@ func (l *Logger) Warningf(format string, args ...interface{}) {
 
 // Notice logs a message using NOTICE as log level.
 func (l *Logger) Notice(args ...interface{}) {
-	s := fmt.Sprint(args...)
-	l.log(NOTICE, "%s", s)
+	l.log(NOTICE, defaultArgsFormat(len(args)), args...)
 }
 
 // Noticef logs a message using NOTICE as log level.
@@ -252,8 +248,7 @@ func (l *Logger) Noticef(format string, args ...interface{}) {
 
 // Info logs a message using INFO as log level.
 func (l *Logger) Info(args ...interface{}) {
-	s := fmt.Sprint(args...)
-	l.log(INFO, "%s", s)
+	l.log(INFO, defaultArgsFormat(len(args)), args...)
 }
 
 // Infof logs a message using INFO as log level.
@@ -263,13 +258,20 @@ func (l *Logger) Infof(format string, args ...interface{}) {
 
 // Debug logs a message using DEBUG as log level.
 func (l *Logger) Debug(args ...interface{}) {
-	s := fmt.Sprint(args...)
-	l.log(DEBUG, "%s", s)
+	l.log(DEBUG, defaultArgsFormat(len(args)), args...)
 }
 
 // Debugf logs a message using DEBUG as log level.
 func (l *Logger) Debugf(format string, args ...interface{}) {
 	l.log(DEBUG, format, args...)
+}
+
+func defaultArgsFormat(argc int) string {
+	f := strings.Repeat("%s ", argc)
+	if argc > 0 {
+		f = f[:len(f) - 1]
+	}
+	return f
 }
 
 func init() {
