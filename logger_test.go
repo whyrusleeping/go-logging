@@ -51,3 +51,29 @@ func TestPrivateBackend(t *testing.T) {
 	}
 
 }
+
+type stringTrap bool
+func (st *stringTrap) String() string {
+	*st = true
+	return ""
+}
+
+func TestLoggingMethodsDontStringifyArgsUnduly(t *testing.T) {
+	backend := InitForTesting(CRITICAL)
+	log := MustGetLogger("test")
+	trap := stringTrap(false)
+	log.Error(&trap)
+	log.Warning(&trap)
+	log.Notice(&trap)
+	log.Info(&trap)
+	log.Debug(&trap)
+
+	// make sure all the records get formatted
+	for i := 0; i < int(backend.size) ; i++ {
+		MemoryRecordN(backend, i).Formatted(0)
+	}
+
+	if bool(trap) == true {
+		t.Fatal("Argument got converted to string unduly")
+	}
+}
