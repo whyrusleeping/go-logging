@@ -83,7 +83,19 @@ var defaultVerbsLayout = []string{
 }
 
 var (
-	pid     = os.Getpid()
+	pid = func() (pid int) {
+		if runtime.GOOS == "js" {
+			// This can panic in some wasm contexts.
+			// https://github.com/golang/go/issues/34627
+			defer func() {
+				if recover() != nil {
+					// set the PID to a sane default.
+					pid = 1
+				}
+			}()
+		}
+		return os.Getpid()
+	}()
 	program = filepath.Base(os.Args[0])
 )
 
