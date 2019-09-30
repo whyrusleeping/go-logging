@@ -47,12 +47,13 @@ func TestPrivateBackend(t *testing.T) {
 		t.Errorf("something in stdBackend, size of backend: %d", stdBackend.size)
 	}
 	if "to private baсkend" == MemoryRecordN(privateBackend, 0).Formatted(0) {
-		t.Errorf("logged to defaultBackend: %s", MemoryRecordN(privateBackend, 0))
+		t.Errorf("logged to defaultBackend: %#v", MemoryRecordN(privateBackend, 0))
 	}
 
 }
 
 type stringTrap bool
+
 func (st *stringTrap) String() string {
 	*st = true
 	return ""
@@ -69,7 +70,7 @@ func TestLoggingMethodsDontStringifyArgsUnduly(t *testing.T) {
 	log.Debug(&trap)
 
 	// make sure all the records get formatted
-	for i := 0; i < int(backend.size) ; i++ {
+	for i := 0; i < int(backend.size); i++ {
 		MemoryRecordN(backend, i).Formatted(0)
 	}
 
